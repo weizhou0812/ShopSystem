@@ -7,7 +7,7 @@
         </el-breadcrumb>
     </div>
     <div class="connet">
-        <el-input placeholder="请输入关键字" class="input-with-select"
+        <el-input placeholder="请输入关键字" class="input-with-select" v-model="inputuid" clearable
             style="width: 200px;margin-right: 15px;margin-left: -1190px;">
             <template #append>
                 <el-button @click="handlesearch"><el-icon>
@@ -26,7 +26,7 @@
         scope.row：相当于一条数据
         -->
         <el-table :data="list" border style="width: 100%">
-            <el-table-column prop="uId" label="用户ID" />
+            <el-table-column prop="uId" label="工号" />
             <el-table-column prop="uName" label="账号" />
             <el-table-column prop="uPassword" label="密码" />
             <el-table-column prop="uIdentity" label="身份" />
@@ -40,7 +40,7 @@
                     <el-button type="primary" @click="handleedit(scope.row)"><el-icon>
                             <Edit />
                         </el-icon></el-button>
-                    <el-button type="danger" @click="handledelete"><el-icon>
+                    <el-button type="danger" @click="handledelete(scope.row.uId)"><el-icon>
                             <Delete />
                         </el-icon></el-button>
                 </template>
@@ -79,11 +79,10 @@
 </template>
 
 <script>
-import qs from 'qs'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { toRefs, reactive, onMounted, ref } from 'vue'
 import axios from '../api_config'
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus'
 // import UserDialog from '@/components/UserDialog.vue'
 export default {
     name: "accountManage",
@@ -120,6 +119,7 @@ export default {
                 },
                 total: "",
                 dialogTitle: "",
+                inputuid: ""
             }
 
         );
@@ -141,13 +141,21 @@ export default {
         getAlllist();
 
         const handlesearch = () => {
-
+            axios.get("/Users/FuzzyQuery?uid=" + tableData.inputuid+"&&pageNum=" + tableData.paging.pagenum + "&&pageSize=" + tableData.paging.pagesize)
+                .then((res) => {
+                    tableData.list = res.data;
+                });
+            axios.get("/Users/FQCount?uid="+ tableData.inputuid)
+                .then((res) => {
+                    tableData.total = res.data
+                });
         };
         const handleadd = () => {
             tableData.dialogFormVisible = true
             tableData.dialogTitle = "添加账号"
         };
         const handlereflesh = () => {
+            tableData.inputuid='';
             getAlllist();
         };
         const handleedit = (row) => {
@@ -156,7 +164,30 @@ export default {
             tableData.dialogTitle = "修改账号"
             tableData.addUserData = row
         };
-        const handledelete = () => {
+        const handledelete = (uId) => {
+            ElMessageBox.confirm(
+                '你确定要删除此条信息吗？',
+                '消息提示',
+                {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }
+            )
+                .then(() => {
+                    axios.delete("/Users/byid?uid=" + uId)
+                    ElMessage({
+                        type: 'success',
+                        message: '删除成功',
+                    })
+                    getAlllist();
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: 'info',
+                        message: '删除取消',
+                    })
+                })
         };
         const addUser = (form) => {
             if (tableData.dialogTitle === "添加账号") {
@@ -177,7 +208,7 @@ export default {
                         }
                     })
                 })
-            }else{
+            } else {
                 form.validate(res => {
                     if (!res) {
                         return
@@ -198,13 +229,19 @@ export default {
         }
         const handleSizeChange = (val) => {
             tableData.paging.pagesize = val
-            console.log(val)
-            getAlllist();
+            if(tableData.inputuid==="")
+            {getAlllist();}
+            else{
+                handlesearch();
+            }
         }
         const handleCurrentChange = (val) => {
             tableData.paging.pagenum = val
-            console.log(val)
-            getAlllist();
+            if(tableData.inputuid==="")
+            {getAlllist();}
+            else{
+                handlesearch();
+            }
         }
         const userForm = ref()
         return {
@@ -218,7 +255,7 @@ export default {
             userForm,
             getAlllist,
             handleSizeChange,
-            handleCurrentChange
+            handleCurrentChange,
         };
     },
 }
