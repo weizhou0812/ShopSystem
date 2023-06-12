@@ -8,6 +8,7 @@ namespace ShopSystem.IService
     {
         //查询表全部数据     
         public Task<List<TEntity>> QueryAsync();
+        //模糊查询
         //新增
         public Task<int> Add(TEntity entity);
         //删除
@@ -22,6 +23,8 @@ namespace ShopSystem.IService
         public Task<List<TEntity>> AsyncQuery(Expression<Func<TEntity, bool>> selectWhere);
         //分页查询
         public Task<List<TEntity>> GetListPage(int pageNum, int pageSize);
+        //按条件分页
+        public Task<List<TEntity>> Sortbycondition(int pageNum, int pageSize, Expression<Func<TEntity, bool>> selectWhere);
 
     }
 }

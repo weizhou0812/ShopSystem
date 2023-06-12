@@ -76,6 +76,11 @@ namespace ShopSystem.Service
         {
             return await _DbContext.Set<TEntity>().Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
         }
+        //按条件分页
+        public async Task<List<TEntity>> Sortbycondition(int pageNum, int pageSize,Expression<Func<TEntity, bool>> selectWhere)
+        {
+            return await _DbContext.Set<TEntity>().Where(selectWhere).Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
 
     }
 }

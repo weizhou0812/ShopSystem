@@ -31,9 +31,9 @@ namespace ShopSystem.Controllers
 
         }
         [HttpDelete("byid")]
-        public async Task<object> del(string id)
+        public async Task<object> del(string uid)
         {
-            var data = await this._iService.Del(c => c.UId == id);
+            var data = await this._iService.Del(c => c.UId == uid);
             return data;
         }
         [HttpGet("byuname")]
@@ -59,7 +59,7 @@ namespace ShopSystem.Controllers
         [HttpGet("byuid")]
         public async Task<object> getlistbyid(string uid)
         {
-            var data = await this._iService.AsyncQuery(a => a.UName == uid);
+            var data = await this._iService.AsyncQuery(a => a.UId == uid);
             if (data == null)
             {
                 return NotFound();
@@ -74,6 +74,19 @@ namespace ShopSystem.Controllers
             //return (data.Count,data).ToTuple();
    
         }
-
+        //模糊查询并分页
+        [HttpGet("FuzzyQuery")]
+        public async Task<object> fuzzyquery(string uid, [FromQuery] int pageNum, int pageSize)
+        {
+            var data=await _iService.Sortbycondition(pageNum,pageSize, e => EF.Functions.Like(e.UId, "%" + uid + "%"));
+            //var data = await _iService.AsyncQuery(e => EF.Functions.Like(e.UId, "%"+uid+"%"));
+            return data;
+        }
+        [HttpGet("FQCount")]
+        public async Task<object> FQCount(string uid)
+        {
+            var data = await _iService.AsyncQuery(e => EF.Functions.Like(e.UId, "%" + uid + "%"));
+            return data.Count();
+        }
     }
 }
