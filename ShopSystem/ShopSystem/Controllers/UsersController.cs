@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities;
+using ShopSystem.Data;
 using ShopSystem.IService;
 using ShopSystem.Models;
 using ShopSystem.Service;
+using ShopSystem.ViewModels;
 using System.Linq.Expressions;
 
 namespace ShopSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [CustomAuthorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _iService;
@@ -18,6 +22,9 @@ namespace ShopSystem.Controllers
         {
             this._iService = iUserService;
         }
+
+
+
         /// <summary>
         /// 查询全部
         /// </summary>
