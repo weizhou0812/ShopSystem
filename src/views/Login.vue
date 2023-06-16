@@ -3,20 +3,18 @@
     <div class="form_wrap">
       <span class="welcomeword">欢 迎 登 录</span>
       <el-form ref="formRef" :model="logindata" label-width="100px" class="demo-ruleForm">
-        <el-form-item class="txtuser" label="用户名" prop="username" :rules="[
+        <el-form-item class="txtuser" label="用户名" prop="uName" :rules="[
           { required: true, message: '此项不得为空', trigger: 'blur' },
         ]">
-          <el-input style="width:250px;" v-model.number="logindata.username" />
+          <el-input style="width:250px;" v-model.number="logindata.uName" />
         </el-form-item>
-        <el-form-item class="txtpassword" label="密码" prop="password" :rules="[
+        <el-form-item class="txtpassword" label="密码" prop="uPassword" :rules="[
           { required: true, message: '此项不得为空', trigger: 'blur' },
         ]">
-          <el-input style="width:250px;" type="password" v-model.number="logindata.password" />
+          <el-input style="width:250px;" type="password" v-model.number="logindata.uPassword" />
         </el-form-item>
         <div style="display: flex; align-items: center; justify-content: center">
-          <el-form-item class="txtcode" label="验证码" prop="code" :rules="[
-            { required: true, message: '此项不得为空', trigger: 'blur' },
-          ]">
+          <el-form-item class="txtcode" label="验证码" >
             <el-input style="width: 145px;" type="text" v-model="logincode.inputCode" placeholder="请输入您的验证码" />
           </el-form-item>
           <div @click="refreshCode">
@@ -42,6 +40,7 @@ import { reactive, toRefs, onMounted, ref } from 'vue';
 import { useRouter } from "vue-router"
 import { useStore } from "vuex"
 import SIdentify from "../components/SIdentify.vue"
+import axios from 'axios';
 export default {
   components: { SIdentify },
   name: "Login",
@@ -51,8 +50,8 @@ export default {
     const store = useStore()
     const data = reactive({
       logindata: {
-        username: "",
-        password: ""
+        uName: "",
+        uPassword: ""
       },
       logincode: {
         identifyCodes: "1234567890",
@@ -93,19 +92,19 @@ export default {
         alert("请输入正确的验证码");
         return;
       } else {
-        store.commit('setUserInfo', data.logindata)
-        localStorage.setItem("logindata",JSON.stringify(data.logindata))
+        store.dispatch('authModule/userLoginAction', data.logindata)
+        // store.commit('setUserInfo', data.logindata)
+        // localStorage.setItem("logindata",JSON.stringify(data.logindata))
         router.push({
-          path: "/"
+            path:"/"
         })
       }
-
     }
     return {
       ...toRefs(data),
       identifyCode,
       handleLogin,
-      refreshCode
+      refreshCode,
     }
   }
 }

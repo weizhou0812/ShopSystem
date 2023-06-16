@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import LayOut from '../views/LayOut.vue'
 import Login from '../views/Login.vue'
 import store from "../store/index.js"
+import { getToken } from '@/views/auth.service'
 const routes = [
   {
     path:"/login",
@@ -49,16 +50,16 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
-
+//全局守卫
 router.beforeEach((to,from,next)=>{
   /**
    * to:从哪个页面
    * from：到那个页面
    * next：只有执行了next()页面才会进行跳转
    */
-  console.log("store",store.state.uInfo)
-  const uInfo=store.state.uInfo.userInfo
-  if(!uInfo.username){
+  // console.log("store",store.state.uInfo)
+  // const uInfo=store.state.uInfo.userInfo
+  if(!getToken()){
     //未登录
     if(to.path=="/login"){
       next()
@@ -66,6 +67,9 @@ router.beforeEach((to,from,next)=>{
     }
     next("/login")
   }else{
+    if(to.path=="/login"){
+      next("/")
+    }
     next()
   }
 })

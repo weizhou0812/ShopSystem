@@ -55,14 +55,14 @@
 <script>
 import { useStore } from "vuex"
 import {useRouter} from "vue-router"
+
 export default{
     name:"layout",
     setup(){
         const store=useStore()
         const router=useRouter()
         const loginOut=()=>{
-            localStorage.removeItem("logindata")
-            store.commit('setUserInfo',{})
+            store.dispatch("authModule/loginOut")
             router.push({
                 path:"/login"
             })
