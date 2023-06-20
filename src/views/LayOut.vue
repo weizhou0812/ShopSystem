@@ -30,7 +30,7 @@
                         <span>角色管理</span>
                     </template>
                     <el-menu-item-group>
-                        <el-menu-item index="/account">角色列表</el-menu-item>
+                        <el-menu-item index="/user">角色列表</el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-sub-menu index="3">
@@ -39,7 +39,16 @@
                         <span>商品管理</span>
                     </template>
                     <el-menu-item-group>
-                        <el-menu-item index="/account">商品列表</el-menu-item>
+                        <el-menu-item index="/product">商品列表</el-menu-item>
+                    </el-menu-item-group>
+                </el-sub-menu>
+                <el-sub-menu index="4">
+                    <template #title>
+                        <el-icon><DataAnalysis /></el-icon>
+                        <span>数据统计</span>
+                    </template>
+                    <el-menu-item-group>
+                        <el-menu-item index="/displaydata">数据显示</el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
             </el-menu>

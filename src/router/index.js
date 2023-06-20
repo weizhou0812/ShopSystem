@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import LayOut from '../views/LayOut.vue'
 import Login from '../views/Login.vue'
 import store from "../store/index.js"
-import { getToken } from '@/views/auth.service'
+import { getToken,isTokenFromLocalStorageVaild } from '@/views/auth.service'
 const routes = [
   {
     path:"/login",
@@ -36,11 +36,11 @@ const routes = [
         name:"product",
         component:()=>import("../views/Pages/productManage.vue")
       },
-      // {
-      //   path:"/userDialog",
-      //   name:"userDialog",
-      //   component:()=>import("../components/UserDialog.vue")
-      // }
+      {
+        path:"/displaydata",
+        name:"displaydata",
+        component:()=>import("../views/Pages/displayData.vue")
+      },
     ]
   },
 
@@ -59,18 +59,28 @@ router.beforeEach((to,from,next)=>{
    */
   // console.log("store",store.state.uInfo)
   // const uInfo=store.state.uInfo.userInfo
-  if(!getToken()){
+  if(getToken()){
+    //已登录
+    if(to.path=="/login"){
+      next("/")
+    }else{
+      //检查token有没有过期
+      if(isTokenFromLocalStorageVaild()){
+        //未过期
+        next()
+      }else{
+        //已过期
+        next("/login")
+      }
+      
+    }
+  }else{
     //未登录
     if(to.path=="/login"){
       next()
-      return
+    }else{
+      next("/login")
     }
-    next("/login")
-  }else{
-    if(to.path=="/login"){
-      next("/")
-    }
-    next()
   }
 })
 
