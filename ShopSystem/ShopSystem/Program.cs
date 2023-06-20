@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using ShopSystem.Data;
 using ShopSystem.IService;
 using ShopSystem.Service;
@@ -8,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling=ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+    options.SerializerSettings.DateTimeZoneHandling=Newtonsoft.Json.DateTimeZoneHandling.Local;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
@@ -41,8 +49,11 @@ builder.Services.AddDbContext<ShopDbContext>(option =>
 {
     option.UseMySQL(builder.Configuration.GetConnectionString("ShopConn"));
 });
-
+//, IEmployeeService, EmployeeService
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
 //ÅäÖÃ¿çÓò·þÎñ
 builder.Services.AddCors(options =>
 {

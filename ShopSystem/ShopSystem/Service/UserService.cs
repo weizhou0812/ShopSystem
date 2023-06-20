@@ -49,7 +49,7 @@ namespace ShopSystem.Service
                         new Claim("name",user.UName)
                     }),
                 //过期时间
-                Expires=DateTime.UtcNow.AddDays(1),
+                Expires=DateTime.UtcNow.AddMinutes(600),
                 //证书签名
                 SigningCredentials=new SigningCredentials
                 (

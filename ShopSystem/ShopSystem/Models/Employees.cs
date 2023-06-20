@@ -12,8 +12,7 @@ namespace ShopSystem.Models
         public string EName { get; set; }
         public string ESex { get; set; }
         public string EAge { get; set; }
-        [Column(TypeName ="date")]
-        public DateTime EBirth { get; set; }
+        public string EBirth { get; set; }
         public string EEmail { get; set; }
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
