@@ -15,7 +15,7 @@
                     </el-icon></el-button>
             </template>
         </el-input>
-        <el-button type="primary" @click="handleadd">添加用户</el-button>
+        <el-button type="primary" @click="handleadd">添加信息</el-button>
         <el-button type="primary" @click="handlereflesh">刷新数据</el-button>
     </div>
     <div class="employeelist">

@@ -12,7 +12,7 @@ module.exports = defineConfig({
           "^/api":""
         }
       }
-    }
+    },
   },
   configureWebpack:{
     plugins:[new NodePloyfillPlugin()]

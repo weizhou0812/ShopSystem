@@ -15,10 +15,13 @@ namespace ShopSystem.Controllers
     public class ProductController : ControllerBase
     {
         public readonly IProductService _iService;
-        public ProductController(IProductService iPservice)
+        private readonly ShopDbContext _DbContext;
+        public ProductController(IProductService iPservice, ShopDbContext _DbContext)
         {
             _iService = iPservice;
+            this._DbContext = _DbContext;
         }
+
         /// <summary>
         /// 查询全部
         /// </summary>
@@ -30,6 +33,25 @@ namespace ShopSystem.Controllers
             var acount = data.Count();
             return acount;
         }
+        [HttpGet("alldata")]
+        public async Task<object> getAlldata()
+        {
+            var data = await this._iService.QueryAsync();
+            return data;
+        }
+        [HttpGet("selectfiled")]
+        public async Task<object> selectFiledName()
+        {
+            var data = await _DbContext.Database.SqlQuery<string>($"SELECT PName,Inventory FROM `products`").ToListAsync();
+            return data;
+        }
+        //[HttpGet("selectfiledinventory")]
+        //public async Task<object> selectFiledInventory()
+        //{
+        //    var data = await _DbContext.Database.SqlQuery<int>($"SELECT Inventory FROM `products`").ToListAsync();
+        //    return data;
+        //}
+
         [HttpDelete("byid")]
         public async Task<object> del(string pid)
         {
